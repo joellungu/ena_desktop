@@ -9,7 +9,14 @@ import 'enregistrement_controller.dart';
 
 enum BestTutorSite { ini, con }
 
-class EnregistrementEtudiant extends StatelessWidget {
+class EnregistrementEtudiant extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _EnregistrementEtudiant();
+  }
+}
+
+class _EnregistrementEtudiant extends State<EnregistrementEtudiant> {
   //
   var box = GetStorage();
   //
@@ -22,6 +29,7 @@ class EnregistrementEtudiant extends StatelessWidget {
       listeFiliere.add("Autre");
     }
   }
+
   //
   var _formKey = GlobalKey<FormState>();
   final _nom = TextEditingController();
@@ -36,6 +44,7 @@ class EnregistrementEtudiant extends StatelessWidget {
   //
   BestTutorSite _site = BestTutorSite.ini;
   RxString filiere = "Autre".obs;
+  RxString type = "Catégorie".obs;
   //
   RxString sexeC = 'F'.obs;
   RxString nEtude = "Licence".obs;
@@ -45,6 +54,14 @@ class EnregistrementEtudiant extends StatelessWidget {
   RxString grade = "Licence".obs;
   //
   RxString photopath = "".obs;
+
+  @override
+  void initState() {
+    //
+    _promotion.text = box.read("promotion") ?? "Ena";
+    //
+    super.initState();
+  }
 
   //
   @override
@@ -67,6 +84,7 @@ class EnregistrementEtudiant extends StatelessWidget {
           Expanded(
             flex: 1,
             child: SingleChildScrollView(
+              controller: ScrollController(),
               child: Container(
                 padding: EdgeInsets.all(20),
                 child: Column(
@@ -370,27 +388,30 @@ class EnregistrementEtudiant extends StatelessWidget {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
-                            ListTile(
-                              title: const Text('Unitiale'),
-                              leading: Radio(
-                                value: BestTutorSite.ini,
-                                groupValue: _site,
-                                onChanged: (BestTutorSite? value) {
+                            Container(
+                              child: Text("${type.value}"),
+                            ),
+                            RadioListTile(
+                              title: const Text("Unitiale"),
+                              value: BestTutorSite.ini,
+                              groupValue: _site,
+                              onChanged: (BestTutorSite? value) {
+                                setState(() {
                                   _site = value!;
                                   categorie.value = "Unitiale";
-                                },
-                              ),
+                                });
+                              },
                             ),
-                            ListTile(
-                              title: const Text('Continue'),
-                              leading: Radio(
-                                value: BestTutorSite.con,
-                                groupValue: _site,
-                                onChanged: (BestTutorSite? value) {
+                            RadioListTile(
+                              title: const Text("Continue"),
+                              value: BestTutorSite.con,
+                              groupValue: _site,
+                              onChanged: (BestTutorSite? value) {
+                                setState(() {
                                   _site = value!;
                                   categorie.value = "Continue";
-                                },
-                              ),
+                                });
+                              },
                             ),
                           ],
                         ),
@@ -399,10 +420,11 @@ class EnregistrementEtudiant extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         TextFormField(
+                          enabled: false,
                           controller: _promotion,
                           validator: (value) {
                             if (value!.isEmpty) {

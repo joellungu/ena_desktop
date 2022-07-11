@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../abscence/abscence_controller.dart';
 import 'calendrier_controller.dart';
+import 'details_agent.dart';
+import 'vue_du_mois.dart';
 
 class Calendrier extends StatefulWidget {
   @override
@@ -20,9 +22,12 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
   late TabController _controller = TabController(length: 2, vsync: this);
   //
   AbscenceController controller = Get.find();
+  //
   CalendrierController calendrierController = Get.find();
 
   TextEditingController mois = TextEditingController();
+  TextEditingController annee = TextEditingController();
+
   RxInt jours = 0.obs;
   String noms = "";
   //
@@ -33,6 +38,8 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
     //
     mois.text = "${DateTime.now().month}";
     //
+    annee.text = "${DateTime.now().year}";
+    //
     controller.saveAgent();
     controller.saveEleve();
     //
@@ -40,46 +47,13 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
         DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);
   }
 
-  int x = 1; //Une variable pour le test
+  RxInt idAgent = (-1).obs;
 
   @override
   void initState() {
-    calendrierController.listeFictif.value.clear();
     //
     vueC = Container();
     vueD = Container();
-
-    while (x < 21) {
-      calendrierController.listeFictif.add({
-        "idcarte": "1234567",
-        "present": true,
-        "lelo": "2022-7-$x-8",
-        "dateArrive": "2022-7-$x-8",
-        "dateDepart": "2022-7-$x-18"
-      });
-      x++;
-    }
-    calendrierController.listeFictif.add({
-      "idcarte": "1234567",
-      "present": true,
-      "lelo": "2022-7-21-8",
-      "dateArrive": "2022-7-21-8",
-      "dateDepart": null
-    });
-    calendrierController.listeFictif.add({
-      "idcarte": "1234567",
-      "present": true,
-      "lelo": "2022-7-22-8",
-      "dateArrive": "2022-7-22-8",
-      "dateDepart": null
-    });
-    calendrierController.listeFictif.add({
-      "idcarte": "1234567",
-      "present": false,
-      "lelo": "2022-7-23-8",
-      "dateArrive": "2022-7-23-8",
-      "dateDepart": "2022-7-23-18"
-    });
     //
     super.initState();
   }
@@ -136,7 +110,7 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
-                          flex: 1,
+                          flex: 3,
                           child: TextField(
                             textAlign: TextAlign.center,
                             controller: mois,
@@ -145,6 +119,25 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
                             ),
                             decoration: InputDecoration(
                               hintText: "$mois",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 7,
+                          child: TextField(
+                            textAlign: TextAlign.center,
+                            controller: annee,
+                            style: TextStyle(
+                              fontSize: 30,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "$annee",
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(
@@ -177,20 +170,83 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
                                     int.parse(mois.text),
                                   );
                                   //
+                                  idAgent.value = controller.l1[index]['id'];
+                                  //print(idAgent.value);
+                                  //
+                                  calendrierController.mois_a(
+                                    "${controller.l1[index]['id']}",
+                                    mois.text.length == 1
+                                        ? "0${mois.text}"
+                                        : mois.text,
+                                    annee.text,
+                                  );
+                                  //
+                                  calendrierController.mois_p(
+                                    //idcarte
+                                    "${controller.l1[index]['idcarte']}",
+                                    mois.text.length == 1
+                                        ? "0${mois.text}"
+                                        : mois.text,
+                                    annee.text,
+                                  );
+                                  calendrierController.mois_all_m(
+                                    "${controller.l1[index]['id']}",
+                                    mois.text.length == 1
+                                        ? "0${mois.text}"
+                                        : mois.text,
+                                    annee.text,
+                                  );
+                                  //print(DateTime.now());
+                                  //
                                   setState(() {
-                                    vueD = DetailsAgent(controller.l1[index]);
+                                    vueD = DetailsAgent(
+                                      UniqueKey(),
+                                      controller.l1[index],
+                                    );
                                     vueC = MoisVue(
                                       UniqueKey(),
                                       controller.l1[index],
+                                      int.parse(mois.text),
+                                      int.parse(annee.text),
                                     );
                                   });
                                   //
                                 },
-                                leading: const Icon(Icons.person),
+                                leading: Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                        color: idAgent.value ==
+                                                controller.l1[index]['id']
+                                            ? Colors.blue
+                                            : Colors.black),
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                          "http://localhost:8080/piecejointe/photo/${controller.l1[index]['id']}",
+                                        ),
+                                        fit: BoxFit.fill),
+                                  ),
+                                ),
                                 title: Text(
-                                    "${controller.l1[index]['nom']}  ${controller.l1[index]['postnom']}"),
+                                  "${controller.l1[index]['nom']}  ${controller.l1[index]['postnom']}",
+                                  style: TextStyle(
+                                    color: idAgent.value ==
+                                            controller.l1[index]['id']
+                                        ? Colors.blue
+                                        : Colors.black,
+                                  ),
+                                ),
                                 subtitle: Text(
-                                    "${controller.l1[index]['matricule']}"),
+                                  "${controller.l1[index]['matricule']}",
+                                  style: TextStyle(
+                                    color: idAgent.value ==
+                                            controller.l1[index]['id']
+                                        ? Colors.blue
+                                        : Colors.black,
+                                  ),
+                                ),
                               );
                             }),
                           ),
@@ -235,380 +291,6 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
             child: Container(
               padding: const EdgeInsets.only(right: 40),
               child: vueC,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class DetailsAgent extends StatefulWidget {
-  Map<String, dynamic> infos = {};
-  DetailsAgent(this.infos);
-  @override
-  State<StatefulWidget> createState() {
-    return _DetailsAgent();
-  }
-}
-
-class _DetailsAgent extends State<DetailsAgent> {
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      controller: ScrollController(),
-      children: [
-        Text(
-          "${widget.infos['nom']} ${widget.infos['postnom']} ${widget.infos['prenom']}",
-          style: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          "${widget.infos['matricule']}",
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.normal,
-          ),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        ListTile(
-          leading: Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          title: const Text("Nombre d'heure"),
-          subtitle: const Text(
-            "120h",
-            style: TextStyle(
-              fontSize: 17,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        ListTile(
-          leading: Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.blueGrey,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          title: const Text("Abscence justifié"),
-          subtitle: const Text(
-            "10j",
-            style: TextStyle(
-              fontSize: 17,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        ListTile(
-          leading: Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          title: const Text("Abscence non justifié"),
-          subtitle: const Text(
-            "10j",
-            style: TextStyle(
-              fontSize: 17,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        ListTile(
-          leading: Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.orange,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          title: const Text("Partielle"),
-          subtitle: const Text(
-            "10j",
-            style: TextStyle(
-              fontSize: 17,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        ListTile(
-          leading: Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          title: const Text("Presence"),
-          subtitle: const Text(
-            "10j",
-            style: TextStyle(
-              fontSize: 17,
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class MoisVue extends StatefulWidget {
-  Map<String, dynamic> d;
-  MoisVue(Key key, this.d) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return _MoisVue();
-  }
-}
-
-class _MoisVue extends State<MoisVue> {
-  double v = 25;
-  var d = 0;
-  var nombreDeJours;
-  //
-  CalendrierController cc = Get.find();
-  //
-  @override
-  void initState() {
-    //
-    super.initState();
-    //
-    nombreDeJours =
-        DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);
-    print("longueur du mois: ${nombreDeJours}");
-    //
-  }
-
-  repartiteur() {
-    //
-    d = DateUtils.firstDayOffset(
-      DateTime.now().year,
-      DateTime.now().month,
-      MaterialLocalizations.of(context),
-    ); //
-
-    nombreDeJours = nombreDeJours + (d - 2);
-    d = d - 2;
-    print("La vaut: $d");
-    print("La vaut: $nombreDeJours");
-    var dd = DateTime(DateTime.now().year, DateTime.now().month);
-    print(dd);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    //
-    repartiteur();
-    //
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            height: 70,
-            color: Colors.grey,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "L",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: v,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "M",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: v,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "M",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: v,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "J",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: v,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "V",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: v,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "S",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: v,
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Container(
-                    color: Colors.white,
-                    alignment: Alignment.center,
-                    child: Text(
-                      "D",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: v,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              child: GridView.count(
-                controller: ScrollController(),
-                crossAxisCount: 7,
-                mainAxisSpacing: 2,
-                crossAxisSpacing: 2,
-                childAspectRatio: 1,
-                children: List.generate(nombreDeJours + 1, (index) {
-                  if (index <= d) {
-                    return Card(
-                        elevation: 0, color: Colors.white, child: Container());
-                  } else {
-                    bool venu = false;
-                    bool parti = false;
-                    cc.listeFictif.forEach((e) {
-                      if (int.parse("${e['lelo']}".split("-")[2]) ==
-                          index - d) {
-                        if (e['present']) {
-                          venu = true;
-                          //print(":: ${e['dateDepart']}");
-                          if (e['dateDepart'] != null) {
-                            parti = true;
-                          } else {
-                            print("datedepart: ${e['dateDepart']}");
-                            parti = false;
-                          }
-                          print("condition: ${e['lelo']} $venu : $parti");
-                        } else {
-                          venu = false;
-                          parti = false;
-                        }
-                      }
-                    });
-                    return InkWell(
-                      onTap: () {
-                        //
-                        var d = DateUtils.firstDayOffset(
-                            DateTime.now().year,
-                            DateTime.now().month,
-                            MaterialLocalizations.of(context));
-                        print("La vaut: $d");
-                        var dd =
-                            DateTime(DateTime.now().year, DateTime.now().month);
-                        print(dd);
-                      },
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: venu && parti
-                                ? Colors.blue
-                                : venu || parti
-                                    ? Colors.orange
-                                    : Colors.red,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "${index - d}",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: v,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                }),
-              ),
             ),
           ),
         ],

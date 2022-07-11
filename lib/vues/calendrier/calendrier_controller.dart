@@ -8,11 +8,21 @@ class CalendrierController extends GetxController {
   //
   RxList l2 = [].obs;
   //
-  RxList l3 = [].obs;
+  RxList listeDePresence = [].obs;
   //
-  RxList l4 = [].obs;
+  RxList listDeAbscence = [].obs;
+  //
+  RxList listDeAbscenceMonth = [].obs;
+  //
+  RxList listDeAbscenceJustifie = [].obs;
   //
   RxList listeFictif = RxList();
+  //
+  RxInt nombreHeure = 0.obs;
+  //
+  RxInt nombreJours = 0.obs;
+  //
+  RxInt nombreJourPartiel = 0.obs;
 
   CalendrierConnexion calendrierConnexion = CalendrierConnexion();
   //
@@ -32,21 +42,56 @@ class CalendrierController extends GetxController {
     }
   }
 
-  mois_p(String idcarte, String mois) async {
-    Response response = await calendrierConnexion.mois_p(idcarte, mois);
-    if (response.statusCode == 200 || response.statusCode == 200) {
+  mois_p(String idcarte, String mois, String annee) async {
+    listeDePresence = RxList();
+    Response response = await calendrierConnexion.mois_p(idcarte, mois, annee);
+    //print("http://localhost:8080/presence/all/$idcarte/$mois/$annee");
+    if (response.isOk) {
       //
-      l3.value = response.body;
-      print(l3.value);
+      nombreJours = RxInt(0);
+      nombreHeure = RxInt(0);
+      nombreJourPartiel = RxInt(0);
+      //
+      listeDePresence.value = response.body;
+      nombreJours.value = listeDePresence.value.length;
+      print("listeDePresence: ${listeDePresence}");
+      for (var e in listeDePresence) {
+        if (e['present']) {
+          nombreJourPartiel.value = nombreJourPartiel.value + 1;
+          print("nombreJourPartiel 1: $nombreJourPartiel");
+          if (e['dateDepart'] != null) {
+            var d1 = DateTime.parse(e['dateArrive']);
+            var d2 = DateTime.parse(e['dateDepart']);
+            Duration du = d2.difference(d1);
+            //print("durée en heure: ${du.inHours}");
+            nombreHeure = nombreHeure + du.inHours;
+          }
+          //print("condition: ${e['lelo']} $venu : $parti");
+        }
+      }
+      print(
+          "nombreHeure: $nombreHeure et nombreJourPartiel 2: $nombreJourPartiel");
     }
   }
 
-  mois_a(String idcarte, String mois) async {
-    Response response = await calendrierConnexion.mois_a(idcarte, mois);
-    if (response.statusCode == 200 || response.statusCode == 201) {
+  mois_a(String idcarte, String mois, String annee) async {
+    listDeAbscence = RxList();
+    Response response = await calendrierConnexion.mois_a(idcarte, mois, annee);
+    if (response.isOk) {
       //
-      l4.value = response.body;
-      print("!!${l4.value}");
+      listDeAbscence.value = response.body;
+      print("!!${listDeAbscence.value}");
+    }
+  }
+
+  mois_all_m(String idcarte, String mois, String annee) async {
+    listDeAbscenceMonth = RxList();
+    Response response =
+        await calendrierConnexion.mois_all_m(idcarte, mois, annee);
+    if (response.isOk) {
+      //
+      listDeAbscenceMonth.value = response.body;
+      print("::${listDeAbscence.value}");
     }
   }
 }
@@ -58,10 +103,17 @@ class CalendrierConnexion extends GetConnect {
   Future<Response> presence() async => await get(
         "http://localhost:8080/agent/all",
       );
-  Future<Response> mois_p(String idcarte, String mois) async => await get(
-        "http://localhost:8080/presence/all/$idcarte/$mois",
+  Future<Response> mois_p(String idcarte, String mois, String annee) async =>
+      await get(
+        "http://localhost:8080/presence/all/$idcarte/$mois/$annee",
       );
-  Future<Response> mois_a(String idcarte, String mois) async => await get(
-        "http://localhost:8080/abscence/all/$idcarte/$mois",
+  Future<Response> mois_a(String idcarte, String mois, String annee) async =>
+      await get(
+        "http://localhost:8080/abscence/alljourabscent/$idcarte/$mois/$annee",
+      );
+  Future<Response> mois_all_m(
+          String idcarte, String mois, String annee) async =>
+      await get(
+        "http://localhost:8080/abscence/all/$idcarte/$mois/$annee",
       );
 }

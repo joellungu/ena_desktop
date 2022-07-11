@@ -59,7 +59,11 @@ class AbscenceController extends GetxController {
       while (t <= j) {
         var df = dd.add(Duration(hours: t * 24));
         print("jours: ${df}");
-        Map<String, dynamic> ja = {"motifs": u["motifs"], "date": "$df"};
+        Map<String, dynamic> ja = {
+          "motifs": u["motifs"],
+          "date": "$df",
+          "idutilisateur": u["idutilisateur"]
+        };
         //on ajoute
         Response rep = await abscenceConnexion.saveJourAbscence(ja);
         print(rep.statusCode);

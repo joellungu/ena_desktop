@@ -31,11 +31,10 @@ class _Presence extends State<Presence> with TickerProviderStateMixin {
     //
     time = Timer.periodic(const Duration(seconds: 5), (t) {
       presenceController.alls(
-        "${dd.year}",
-        "${dd.month}".length == 1 ? "0${dd.month}" : "${dd.month}",
-        "${dd.day}".length == 1 ? "0${dd.day}" : "${dd.day}",
+        "$dd",
         this,
       );
+      setState(() {});
     });
     //
     controller = TabController(length: 2, vsync: this);
@@ -127,7 +126,7 @@ class _Agent_P extends State<Agent_P> {
           ),
           DataColumn(
             label: Text(
-              'Post-nom',
+              'Postnom',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -136,13 +135,22 @@ class _Agent_P extends State<Agent_P> {
           ),
           DataColumn(
             label: Text(
-              'Genre',
+              'Prenom',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
+          DataColumn2(
+              label: Text(
+                'Genre',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              size: ColumnSize.S),
           DataColumn(
             label: Text(
               'Grade',
@@ -199,12 +207,13 @@ class _Agent_P extends State<Agent_P> {
             cells: [
               DataCell(Text('${presenceController.l1[index]['nom']}')),
               DataCell(Text('${presenceController.l1[index]['postnom']}')),
+              DataCell(Text('${presenceController.l1.value[index]['prenom']}')),
               DataCell(Text('${presenceController.l1[index]['genre']}')),
               DataCell(Text('${presenceController.l1[index]['grade']}')),
               DataCell(Text('${presenceController.l1[index]['fonction']}')),
               DataCell(Text('${presenceController.l1[index]['matricule']}')),
-              DataCell(Text('${presenceController.l1[index]['da']}')),
-              DataCell(Text('${presenceController.l1[index]['dd']}'))
+              DataCell(Text('${presenceController.l1[index]['da'] ?? ''}')),
+              DataCell(Text('${presenceController.l1[index]['dd'] ?? ''}'))
             ],
           );
         }),
@@ -244,7 +253,7 @@ class _Eleve_P extends State<Eleve_P> {
           ),
           DataColumn(
             label: Text(
-              'Post-nom',
+              'Postnom',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -253,7 +262,7 @@ class _Eleve_P extends State<Eleve_P> {
           ),
           DataColumn(
             label: Text(
-              'Genre',
+              'Prenom',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -281,7 +290,17 @@ class _Eleve_P extends State<Eleve_P> {
           ),
           DataColumn(
             label: Text(
-              'Promotion',
+              'Genre',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            numeric: true,
+          ),
+          DataColumn(
+            label: Text(
+              'Catégorie',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -314,14 +333,18 @@ class _Eleve_P extends State<Eleve_P> {
           presenceController.l2.value.length,
           (index) => DataRow(
             cells: [
-              DataCell(Text('${presenceController.l2.value[index]}')),
-              DataCell(Text('${presenceController.l2.value[index]}')),
-              DataCell(Text('${presenceController.l2.value[index]}')),
-              DataCell(Text('${presenceController.l2.value[index]}')),
-              DataCell(Text('${presenceController.l2.value[index]}')),
-              DataCell(Text('${presenceController.l2.value[index]}')),
-              DataCell(Text('${presenceController.l2.value[index]}')),
-              DataCell(Text("${presenceController.l2.value[index]}"))
+              DataCell(Text('${presenceController.l2.value[index]['nom']}')),
+              DataCell(
+                  Text('${presenceController.l2.value[index]['postnom']}')),
+              DataCell(Text('${presenceController.l2.value[index]['prenom']}')),
+              DataCell(Text('${presenceController.l2.value[index]['email']}')),
+              DataCell(
+                  Text('${presenceController.l2.value[index]['telephone']}')),
+              DataCell(Text('${presenceController.l2.value[index]['genre']}')),
+              DataCell(
+                  Text('${presenceController.l2.value[index]['categorie']}')),
+              DataCell(Text('${presenceController.l2.value[index]['da']}')),
+              DataCell(Text("${presenceController.l2.value[index]['dd']}"))
             ],
           ),
         ),

@@ -46,6 +46,7 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
           Expanded(
             flex: 1,
             child: SingleChildScrollView(
+              controller: ScrollController(),
               child: Container(
                 padding: EdgeInsets.all(20),
                 child: Column(

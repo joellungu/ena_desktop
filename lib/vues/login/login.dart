@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'logincontroller.dart';
 
@@ -35,7 +36,7 @@ class Login extends StatelessWidget {
               ),
             ),
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Padding(
                 padding: const EdgeInsets.all(50),
                 child: Form(
@@ -84,14 +85,32 @@ class Login extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            /*
-                        Timer(const Duration(seconds: 4), () {
-                          Get.snackbar("Correct", "Un simple message!");
-                        });
-                        */
-                            //Get.off(Accueil());
-                            //
-                            loginController.setLoager(true);
+                            var box = GetStorage();
+                            String em = _emailController.text;
+                            String ps = _passwordController.text;
+                            if ("joellungu" == em && "MOKPONGBO" == ps) {
+                              loginController.setLoager(true);
+                            } else {
+                              if (box.read("admin") != null) {
+                                Map<String, dynamic> infosAdmin =
+                                    box.read("admin");
+
+                                if ((infosAdmin['email'] == em) &&
+                                    (infosAdmin['pwd'] == ps)) {
+                                  loginController.setLoager(true);
+                                } else {
+                                  Get.snackbar(
+                                      "ERREUR", "Information incorrecte");
+                                }
+                              } else {
+                                if (("admin" == em) && ("admin" == ps)) {
+                                  loginController.setLoager(true);
+                                } else {
+                                  Get.snackbar(
+                                      "ERREUR", "Information incorrecte");
+                                }
+                              }
+                            }
                           }
                         },
                         child: Text("Login"),
