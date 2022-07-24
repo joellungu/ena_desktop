@@ -1,6 +1,6 @@
+import 'package:ena_desktop/vues/abscence/abscence_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'abscence/abscence_controller.dart';
 import 'accueil/accueil.dart';
 import 'accueil/accueilController.dart';
 import 'agents/ajouter/enregistrement_controller.dart';
@@ -17,7 +17,7 @@ class Principal extends StatelessWidget {
       Get.put(EnregistrementController());
   //
   //
-  AbscenceController abscenceController = Get.put(AbscenceController());
+  AbsenceController absenceController = Get.put(AbsenceController());
   //
   CalendrierController calendrierController = Get.put(CalendrierController());
   //

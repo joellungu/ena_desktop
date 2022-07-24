@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:ena_desktop/utils/utils.dart';
 import 'package:get/get.dart';
 
-class AbscenceController extends GetxController {
+class AbsenceController extends GetxController {
   //
   RxList l1 = [].obs;
   //
@@ -17,31 +18,31 @@ class AbscenceController extends GetxController {
     // }
   }
 
-  AbscenceConnexion abscenceConnexion = AbscenceConnexion();
+  AbsenceConnexion absenceConnexion = AbsenceConnexion();
   //
   saveAgent() async {
-    Response response = await abscenceConnexion.allAgent();
+    Response response = await absenceConnexion.allAgent();
     if (response.statusCode == 200 || response.statusCode == 200) {
       //
       l1.value = response.body;
       //Get.back();
-      //Get.snackbar("Success", "Enregistrement éffectué avec succé!");
+      //Get.snackbar("Effectué", "Enregistrement éffectué avec succé!");
     }
   }
 
   //
   saveEleve() async {
-    Response response = await abscenceConnexion.allEleve();
+    Response response = await absenceConnexion.allEleve();
     if (response.isOk) {
       //
       l2.value = response.body;
-      //Get.back();http://localhost:8080/abscence/all/8/06
-      //Get.snackbar("Success", "Enregistrement éffectué avec succé!");
+      //Get.back();${Utils.url}/absence/all/8/06
+      //Get.snackbar("Effectué", "Enregistrement éffectué avec succé!");
     }
   }
 
-  abscence(Map<String, dynamic> u) async {
-    Response response = await abscenceConnexion.abscence(u);
+  absence(Map<String, dynamic> u) async {
+    Response response = await absenceConnexion.absence(u);
     if (response.statusCode == 200 || response.statusCode == 200) {
       /**
        * "dateDebut": "$dtDebut",
@@ -65,31 +66,30 @@ class AbscenceController extends GetxController {
           "idutilisateur": u["idutilisateur"]
         };
         //on ajoute
-        Response rep = await abscenceConnexion.saveJourAbscence(ja);
+        Response rep = await absenceConnexion.saveJourabsence(ja);
         print(rep.statusCode);
         //print(rep.body);
         t++;
       }
       //
       Get.back();
-      http: //localhost:8080/abscence/all/8/06
-      Get.snackbar("Success", "Enregistrement éffectué avec succé!");
+      http: //localhost:8080/absence/all/8/06
+      Get.snackbar("Effectué", "Enregistrement éffectué avec succé!");
     }
   }
 }
 
-class AbscenceConnexion extends GetConnect {
+class AbsenceConnexion extends GetConnect {
   Future<Response> allAgent() async => await get(
-        "http://localhost:8080/agent/all",
+        "${Utils.url}/agent/all",
       );
 
   Future<Response> allEleve() async => await get(
-        "http://localhost:8080/eleve/all",
+        "${Utils.url}/eleve/all",
       );
-  Future<Response> abscence(Map<String, dynamic> u) async =>
-      await post("http://localhost:8080/abscence/save", jsonEncode(u));
+  Future<Response> absence(Map<String, dynamic> u) async =>
+      await post("${Utils.url}/absence/save", jsonEncode(u));
 
-  Future<Response> saveJourAbscence(Map<String, dynamic> jour) async =>
-      await post(
-          "http://localhost:8080/abscence/savejourabscent", jsonEncode(jour));
+  Future<Response> saveJourabsence(Map<String, dynamic> jour) async =>
+      await post("${Utils.url}/absence/savejourabscent", jsonEncode(jour));
 }

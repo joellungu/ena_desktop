@@ -1,3 +1,4 @@
+import 'package:ena_desktop/vues/agents/ajouter/enregistrement_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -10,14 +11,24 @@ class Admin extends StatefulWidget {
 }
 
 class _Admin extends State<Admin> with TickerProviderStateMixin {
-  List l = ["Filière", "Mot de passe", "Nom de la promotion", "plus"];
+  List l = ["Filière", "Mot de passe", "Promotion", "Fonction", "Plus"];
+  //
+  EnregistrementController enregistrementController = Get.find();
+  //
   List listeFiliere = [];
-  late TabController _controller = TabController(length: 4, vsync: this);
+  late TabController _controller = TabController(length: 5, vsync: this);
   TextEditingController text = TextEditingController();
+  //
+  TextEditingController textFonction = TextEditingController();
   //
   TextEditingController promotion = TextEditingController();
   //
-
+  List listeFonction = [];
+  //
+  String titreFonction = "";
+  //
+  String grade = "Chef de Division";
+  //
   var box = GetStorage();
   //
   var _formKey = GlobalKey<FormState>();
@@ -125,7 +136,11 @@ class _Admin extends State<Admin> with TickerProviderStateMixin {
                                   subtitle: Text("${listeFiliere[index]}"),
                                   trailing: IconButton(
                                     icon: const Icon(Icons.close),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      setState(() {
+                                        listeFiliere.removeAt(index);
+                                      });
+                                    },
                                   ),
                                 );
                               }
@@ -240,6 +255,165 @@ class _Admin extends State<Admin> with TickerProviderStateMixin {
                       ],
                     ),
                   ),
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    child: ListView(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(10),
+                          //height: 40,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Text("Grade  "),
+                              Expanded(
+                                flex: 1,
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    isExpanded: true,
+                                    value: grade,
+                                    icon: const Icon(Icons.arrow_downward),
+                                    elevation: 16,
+                                    style: const TextStyle(
+                                        color: Colors.deepPurple),
+                                    underline: Container(
+                                      height: 2,
+                                      color: Colors.blue,
+                                    ),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        grade = newValue!;
+                                        if (newValue == "Chef de Division") {
+                                          //
+                                          titreFonction = "Chef de Division";
+                                          loadBySelect(titreFonction);
+                                        } else if (newValue ==
+                                            "Chef de Bureau") {
+                                          //
+                                          titreFonction = "Chef de Bureau";
+                                          loadBySelect(titreFonction);
+                                        } else if (newValue ==
+                                            "Attaché d'Administration de 1eme classe") {
+                                          //
+                                          titreFonction =
+                                              "Attaché d'Administration de 1eme classe";
+                                          loadBySelect(titreFonction);
+                                          //
+                                        } else if (newValue ==
+                                            "Attaché d'Administration de 2eme classe") {
+                                          //
+                                          titreFonction =
+                                              "Attaché d'Administration de 2eme classe";
+                                          loadBySelect(titreFonction);
+                                          //
+                                        } else if (newValue ==
+                                            "Agent Auxiliaire de 2eme Classe") {
+                                          //
+                                          titreFonction =
+                                              "Agent Auxiliaire de 2eme Classe";
+                                          loadBySelect(titreFonction);
+                                          //
+                                        } else if (newValue == "Huissier") {
+                                          //
+                                          titreFonction = "Huissier";
+                                          loadBySelect(titreFonction);
+                                          //
+                                        } else {
+                                          //
+                                          titreFonction = "";
+                                          loadBySelect(titreFonction);
+                                          //
+                                        }
+                                      });
+                                    },
+                                    items: <String>[
+                                      'Chef de Division',
+                                      'Chef de Bureau',
+                                      "Attaché d'Administration de 1eme classe",
+                                      "Attaché d'Administration de 2eme classe",
+                                      'Agent Auxiliaire de 2eme Classe',
+                                      'Huissier',
+                                      'Stagiaire',
+                                    ].map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        TextField(
+                          controller: textFonction,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              if (textFonction.text.isNotEmpty) {
+                                setState(() {
+                                  if (box.read(titreFonction) != null) {
+                                    //
+                                    listeFonction = box.read(titreFonction);
+                                    listeFonction.add(textFonction.text);
+                                    //
+                                    box.write(titreFonction, listeFonction);
+                                    //
+                                  } else {
+                                    //
+                                    listeFonction.clear();
+                                    //
+                                    //listeFonction = box.read(titreFonction);
+                                    //
+                                    listeFonction.add(textFonction.text);
+                                    //
+                                    box.write(titreFonction, listeFonction);
+                                    //
+                                  }
+                                });
+                              } else {
+                                Get.snackbar("ERREUR",
+                                    "Veuillez saisir un text dans le champ");
+                              }
+                            },
+                            child: const Text("Ajoutter")),
+                        Column(
+                          children: List.generate(
+                            listeFonction.length,
+                            (index) {
+                              return ListTile(
+                                title: Text("${listeFonction[index]}"),
+                                subtitle: Text("${listeFonction[index]}"),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.close),
+                                  onPressed: () {
+                                    setState(() {
+                                      listeFonction.removeAt(index);
+                                    });
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                   Container(),
                 ],
               ),
@@ -248,5 +422,14 @@ class _Admin extends State<Admin> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  loadBySelect(String titreFonction) {
+    if (box.read(titreFonction) != null) {
+      //
+      listeFonction = box.read(titreFonction);
+      //
+    }
+    //
   }
 }

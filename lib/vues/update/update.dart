@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:ena_desktop/utils/utils.dart';
+import 'package:ena_desktop/vues/abscence/abscence_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
-import '../abscence/abscence_controller.dart';
 import '../agents/ajouter/enregistrement_controller.dart';
 import 'update_controller.dart';
 
@@ -27,7 +27,7 @@ class _Update extends State<Update> with TickerProviderStateMixin {
   late TabController _controller = TabController(length: 2, vsync: this);
 
   //
-  AbscenceController controller = Get.find();
+  AbsenceController controller = Get.find();
   UpdateController updateController = Get.find();
 
   String mois = "${DateTime.now().month}";
@@ -188,7 +188,7 @@ class MiseJA extends GetView<EnregistrementController> {
     controller.grade.value = map['grade'];
     controller.fonction.value = map['fonction'];
     //var fonctions = [];
-    photopath.value = "http://localhost:8080/piecejointe/photo/${map['id']}";
+    photopath.value = "${Utils.url}/piecejointe/photo/${map['id']}";
   }
   //
   //var _formKey = GlobalKey<FormState>();
@@ -959,7 +959,7 @@ class MiseJE extends StatelessWidget {
     //
     sexeC.value = '${map['genre']}';
     nEtude.value = "${map['niveauEtude']}";
-    photopath.value = "http://localhost:8080/piecejointe/photo/${map['id']}";
+    photopath.value = "${Utils.url}/piecejointe/photo/${map['id']}";
     //
     if (box.read("filiere") != null) {
       listeFiliere = box.read("filiere");

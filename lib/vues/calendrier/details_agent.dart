@@ -1,3 +1,4 @@
+import 'package:ena_desktop/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -31,7 +32,7 @@ class _DetailsAgent extends State<DetailsAgent> {
                     borderRadius: BorderRadius.circular(35),
                     image: DecorationImage(
                         image: NetworkImage(
-                          "http://localhost:8080/piecejointe/photo/${widget.infos['id']}",
+                          "${Utils.url}/piecejointe/photo/${widget.infos['id']}",
                         ),
                         fit: BoxFit.fill),
                   ),
@@ -76,11 +77,11 @@ class _DetailsAgent extends State<DetailsAgent> {
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(cc.listDeAbscenceMonth.length, (index) {
+              children: List.generate(cc.listDeabsenceMonth.length, (index) {
                 var d1 =
-                    DateTime.parse(cc.listDeAbscenceMonth[index]['dateDebut']);
+                    DateTime.parse(cc.listDeabsenceMonth[index]['dateDebut']);
                 var d2 =
-                    DateTime.parse(cc.listDeAbscenceMonth[index]['dateFin']);
+                    DateTime.parse(cc.listDeabsenceMonth[index]['dateFin']);
                 //
                 Duration du = d2.difference(d1);
                 print("durée en heure: ${du.inHours}");
@@ -91,9 +92,9 @@ class _DetailsAgent extends State<DetailsAgent> {
                         builder: (context) {
                           return AlertDialog(
                             //
-                            title: const Text("Abscence justifié"),
+                            title: const Text("absence justifié"),
                             content: Text(
-                                "${cc.listDeAbscenceMonth[index]['motifs']}"),
+                                "${cc.listDeabsenceMonth[index]['motifs']}"),
                           );
                         });
                   },
@@ -105,7 +106,7 @@ class _DetailsAgent extends State<DetailsAgent> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  title: const Text("Abscence justifié"),
+                  title: const Text("absence justifié"),
                   subtitle: Text(
                     "${du.inDays} J",
                     style: const TextStyle(
@@ -127,7 +128,7 @@ class _DetailsAgent extends State<DetailsAgent> {
                 ),
               ),
               title: const Text(
-                "Abscence non justifié",
+                "absence non justifié",
                 style: TextStyle(
                   fontSize: 17,
                   color: Colors.black,
@@ -165,7 +166,7 @@ class _DetailsAgent extends State<DetailsAgent> {
               ),
               title: const Text("Presence"),
               subtitle: Text(
-                "${cc.nombreHeure} J",
+                "${cc.nombreJours} J",
                 style: const TextStyle(
                   fontSize: 17,
                   color: Colors.black,

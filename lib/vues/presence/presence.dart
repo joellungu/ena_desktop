@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:data_table_2/data_table_2.dart';
+import 'package:ena_desktop/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -28,6 +29,12 @@ class _Presence extends State<Presence> with TickerProviderStateMixin {
     //presenceController.l2.clear();
     //
     DateTime dd = DateTime.now();
+    DateTime ddd = DateTime(
+      dd.year,
+      dd.month,
+      12,
+    );
+
     //
     time = Timer.periodic(const Duration(seconds: 5), (t) {
       presenceController.alls(
@@ -114,6 +121,15 @@ class _Agent_P extends State<Agent_P> {
         horizontalMargin: 12,
         minWidth: 600,
         columns: const [
+          DataColumn(
+            label: Text(
+              '',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           DataColumn2(
             label: Text(
               'Nom',
@@ -205,6 +221,20 @@ class _Agent_P extends State<Agent_P> {
           //print('${presenceController.l1[index]}');
           return DataRow(
             cells: [
+              DataCell(
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    image: DecorationImage(
+                        image: NetworkImage(
+                          "${Utils.url}/piecejointe/photo/${presenceController.l1[index]['id']}",
+                        ),
+                        fit: BoxFit.fill),
+                  ),
+                ),
+              ),
               DataCell(Text('${presenceController.l1[index]['nom']}')),
               DataCell(Text('${presenceController.l1[index]['postnom']}')),
               DataCell(Text('${presenceController.l1.value[index]['prenom']}')),
@@ -241,6 +271,15 @@ class _Eleve_P extends State<Eleve_P> {
         horizontalMargin: 12,
         minWidth: 600,
         columns: const [
+          DataColumn(
+            label: Text(
+              '',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           DataColumn2(
             label: Text(
               'Nom',
@@ -333,6 +372,20 @@ class _Eleve_P extends State<Eleve_P> {
           presenceController.l2.value.length,
           (index) => DataRow(
             cells: [
+              DataCell(
+                Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25),
+                    image: DecorationImage(
+                        image: NetworkImage(
+                          "${Utils.url}/piecejointe/photo/${presenceController.l2[index]['id']}",
+                        ),
+                        fit: BoxFit.fill),
+                  ),
+                ),
+              ),
               DataCell(Text('${presenceController.l2.value[index]['nom']}')),
               DataCell(
                   Text('${presenceController.l2.value[index]['postnom']}')),

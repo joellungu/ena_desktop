@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ena_desktop/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,12 +17,16 @@ class PresenceController extends GetxController {
     print("${response.body}, == $date");
     if (response.isOk) {
       //
-      lid.value = response.body;
+      Map<String, dynamic> map = response.body;
+      l1.value = map["listeagent"];
+      l2.value = map["listeeleve"];
+
       //print("Liste principale: ${lid.value}");
       //state!.setState(() {});
-      //Get.back();http://localhost:8080/abscence/all/8/06
-      //Get.snackbar("Success", "Enregistrement éffectué avec succé!");
+      //Get.back();${Utils.url}/absence/all/8/06
+      //Get.snackbar("Effectué", "Enregistrement éffectué avec succé!");
     }
+    /*
 
     lid.value.forEach((element) {
       getAgent(element['idcarte'], "${element['dateDepart'] ?? ''}",
@@ -29,6 +34,7 @@ class PresenceController extends GetxController {
       getEleve(element['idcarte'], "${element['dateDepart'] ?? ''}",
           "${element['dateArrive'] ?? ''}");
     });
+    */
   }
 
   //
@@ -93,14 +99,14 @@ class PresenceController extends GetxController {
 
 class PresenceConnexion extends GetConnect {
   Future<Response> alls(String date) async => await get(
-        "http://localhost:8080/presence/allbydate/$date",
+        "${Utils.url}/presence/allbydate/$date",
       );
 
   Future<Response> getEleve(String id) async => await get(
-        "http://localhost:8080/eleve/details/$id",
+        "${Utils.url}/eleve/details/$id",
       );
 
   Future<Response> getAgent(String id) async => await get(
-        "http://localhost:8080/agent/details/$id",
+        "${Utils.url}/agent/details/$id",
       );
 }

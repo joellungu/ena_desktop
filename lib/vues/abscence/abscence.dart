@@ -1,18 +1,17 @@
 import 'dart:io';
-
+import 'package:ena_desktop/utils/utils.dart';
+import 'package:ena_desktop/vues/abscence/abscence_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'abscence_controller.dart';
 
 //
 enum BestTutorSite { ini, con }
 
-class Abscence extends GetView<AbscenceController> {
+class Absence extends GetView<AbsenceController> {
   //
 
   //
-  Abscence() {
+  absence() {
     //
     controller.saveAgent();
     controller.saveEleve();
@@ -92,7 +91,7 @@ class Abscence extends GetView<AbscenceController> {
                             List.generate(controller.l1.value.length, (index) {
                           print("${controller.l1[index]['id']}");
                           //File f = File(
-                          //   "http://localhost:8080/piecejointe/photo/1/1.jpg");
+                          //   "${Utils.url}/piecejointe/photo/1/1.jpg");
 
                           ///${controller.l1[index]['id']}
                           //print(f.length());
@@ -103,7 +102,7 @@ class Abscence extends GetView<AbscenceController> {
                                 context: context,
                                 builder: (context) {
                                   return Material(
-                                    child: CreeAbscence(
+                                    child: Creeabsence(
                                         "${controller.l1[index]['id']}",
                                         "${controller.l1[index]['nom']} ${controller.l1[index]['postnom']}"),
                                   );
@@ -117,7 +116,7 @@ class Abscence extends GetView<AbscenceController> {
                                 borderRadius: BorderRadius.circular(15),
                                 image: DecorationImage(
                                     image: NetworkImage(
-                                      "http://localhost:8080/piecejointe/photo/${controller.l1[index]['id']}",
+                                      "${Utils.url}/piecejointe/photo/${controller.l1[index]['id']}",
                                     ),
                                     fit: BoxFit.fill),
                               ),
@@ -204,7 +203,7 @@ class Abscence extends GetView<AbscenceController> {
                                 context: context,
                                 builder: (context) {
                                   return Material(
-                                    child: CreeAbscence(
+                                    child: Creeabsence(
                                         "${controller.l2[index]['id']}",
                                         "${controller.l2[index]['nom']} ${controller.l2[index]['postnom']}"),
                                   );
@@ -219,7 +218,7 @@ class Abscence extends GetView<AbscenceController> {
                                 borderRadius: BorderRadius.circular(15),
                                 image: DecorationImage(
                                     image: NetworkImage(
-                                      "http://localhost:8080/piecejointe/photo/${controller.l1[index]['id']}",
+                                      "${Utils.url}/piecejointe/photo/${controller.l1[index]['id']}",
                                     ),
                                     fit: BoxFit.fill),
                               ),
@@ -257,13 +256,13 @@ class Abscence extends GetView<AbscenceController> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Abscence ponctuelle"),
+                          Text("absence ponctuelle"),
                           SizedBox(
                             height: 20,
                           ),
                           CheckboxListTile(
                             value: v,
-                            title: Text("Abscence ponctuelle"),
+                            title: Text("absence ponctuelle"),
                             onChanged: (r) {
                               //
                             },
@@ -279,7 +278,7 @@ class Abscence extends GetView<AbscenceController> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            const Text("Abscence justifié"),
+                            const Text("absence justifié"),
                             Padding(
                               padding: EdgeInsets.only(left: 50, right: 50),
                               child: Row(
@@ -352,19 +351,19 @@ class Abscence extends GetView<AbscenceController> {
         
 */
 
-class CreeAbscence extends StatefulWidget {
+class Creeabsence extends StatefulWidget {
   String id;
   String nom;
   //
-  CreeAbscence(this.id, this.nom);
+  Creeabsence(this.id, this.nom);
 
   @override
   State<StatefulWidget> createState() {
-    return _CreeAbscence();
+    return _Creeabsence();
   }
 }
 
-class _CreeAbscence extends State<CreeAbscence> {
+class _Creeabsence extends State<Creeabsence> {
   //
 
   RxString dtDebut = "".obs;
@@ -372,7 +371,7 @@ class _CreeAbscence extends State<CreeAbscence> {
   //
   BestTutorSite _site = BestTutorSite.ini;
   //
-  AbscenceController abscenceController = Get.put(AbscenceController());
+  AbsenceController absenceController = Get.put(AbsenceController());
   //
   final justification = TextEditingController();
   //
@@ -451,7 +450,7 @@ class _CreeAbscence extends State<CreeAbscence> {
                             borderRadius: BorderRadius.circular(15),
                             image: DecorationImage(
                                 image: NetworkImage(
-                                  "http://localhost:8080/piecejointe/photo/${widget.id}",
+                                  "${Utils.url}/piecejointe/photo/${widget.id}",
                                 ),
                                 fit: BoxFit.fill),
                           ),
@@ -587,7 +586,7 @@ class _CreeAbscence extends State<CreeAbscence> {
                               "dateFin": "$dtFin"
                             };
                             //
-                            abscenceController.abscence(a);
+                            absenceController.absence(a);
                             //
                           },
                           child: Text("Enregistrer"),

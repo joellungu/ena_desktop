@@ -221,7 +221,7 @@ class _MoisVue extends State<MoisVue> {
                     } else {
                       RxBool venu = false.obs;
                       RxBool parti = false.obs;
-                      RxBool abscenceJ = false.obs;
+                      RxBool absenceJ = false.obs;
                       cc.listeDePresence.forEach((e) {
                         //Timer(Duration(seconds: 1), () {
                         //setState(() {
@@ -237,10 +237,38 @@ class _MoisVue extends State<MoisVue> {
                             //Duration du = d2.difference(d1);
                             //print("durée en heure: ${du.inHours}");
                             //
-                            if (e['dateDepart'] != null) {
+                            if (e['dateDepart'] != null &&
+                                e['dateArrive'] != null) {
                               parti = true.obs;
-                              var d1 = DateTime.parse(e['dateArrive']);
-                              var d2 = DateTime.parse(e['dateDepart']);
+                              //var d1 = DateTime.parse(e['dateArrive']);
+                              //var d2 = DateTime.parse(e['dateDepart']);
+                              List<String> td1 =
+                                  "${e['dateArrive']}".split(" ");
+                              var v1 = td1[0].split("-");
+                              var v2 = td1[1].split(":");
+                              //
+                              List<String> td2 =
+                                  "${e['dateDepart']}".split(" ");
+                              var s1 = td2[0].split("-");
+                              var s2 = td2[1].split(":");
+                              //
+
+                              var d1 = DateTime(
+                                int.parse(v1[0]),
+                                int.parse(v1[1]),
+                                int.parse(v1[2]),
+                                int.parse(v2[0]),
+                                int.parse(v2[1]),
+                                int.parse(v2[2].split(".")[0]),
+                              );
+                              var d2 = DateTime(
+                                int.parse(s1[0]),
+                                int.parse(s1[1]),
+                                int.parse(s1[2]),
+                                int.parse(s2[0]),
+                                int.parse(s2[1]),
+                                int.parse(s2[2].split(".")[0]),
+                              );
                               //
                               //var d1 =
                               //    DateTime.parse("2022-07-09 08:59:13.831475");
@@ -266,12 +294,12 @@ class _MoisVue extends State<MoisVue> {
                         //});
                       });
                       //
-                      cc.listDeAbscence.forEach((e) {
+                      cc.listDeabsence.forEach((e) {
                         if (int.parse(
                                 "${e['date']}".split(" ")[0].split("-")[2]) ==
                             index - d) {
                           //print("jour abscent: $e");
-                          abscenceJ = true.obs;
+                          absenceJ = true.obs;
                         }
                       });
                       //
@@ -289,15 +317,15 @@ class _MoisVue extends State<MoisVue> {
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(25),
                           ),
                           child: Obx(
                             () => Container(
                               decoration: BoxDecoration(
-                                color: abscenceJ.value
+                                color: absenceJ.value
                                     ? Colors.blueGrey
                                     : getCouleur(venu.value, parti.value),
-                                borderRadius: BorderRadius.circular(20),
+                                borderRadius: BorderRadius.circular(25),
                               ),
                               alignment: Alignment.center,
                               child: Text(

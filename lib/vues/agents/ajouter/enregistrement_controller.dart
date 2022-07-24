@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:ena_desktop/utils/utils.dart';
+import 'package:ena_desktop/vues/abscence/abscence_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
-
-import '../../abscence/abscence_controller.dart';
 
 class EnregistrementController extends GetxController {
   //
@@ -70,7 +70,7 @@ class EnregistrementController extends GetxController {
       //print("Lll ${rep.statusCode}");
       //print("Ll2 ${rep.body}");
       Get.back();
-      Get.snackbar("Success", "Enregistrement éffectué avec succé!");
+      Get.snackbar("Effectué", "Enregistrement éffectué avec succé!");
     } else {
       //
       Get.back();
@@ -90,7 +90,7 @@ class EnregistrementController extends GetxController {
       //print("Ll2 ${rep.body}");
       //
       Get.back();
-      Get.snackbar("Success", "Enregistrement éffectué avec succé!");
+      Get.snackbar("Effectué", "Enregistrement éffectué avec succé!");
     } else {
       //
       Get.back();
@@ -108,10 +108,10 @@ class EnregistrementController extends GetxController {
       }
       //
       Get.back();
-      Get.snackbar("Success", "Modification éffectué avec succé!");
+      Get.snackbar("Effectué", "Modification éffectué avec succé!");
       //
       //
-      AbscenceController controller = Get.find();
+      AbsenceController controller = Get.find();
       //
       controller.saveAgent();
       controller.saveEleve();
@@ -132,10 +132,10 @@ class EnregistrementController extends GetxController {
       }
       //
       Get.back();
-      Get.snackbar("Success", "Modification éffectué avec succé!");
+      Get.snackbar("Effectué", "Modification éffectué avec succé!");
       //
       //
-      AbscenceController controller = Get.find();
+      AbsenceController controller = Get.find();
       //
       controller.saveAgent();
       controller.saveEleve();
@@ -151,16 +151,16 @@ class EnregistrementController extends GetxController {
 
 class EnregistrementConnexion extends GetConnect {
   Future<Response> saveAgent(Map<String, dynamic> u) async =>
-      await post("http://localhost:8080/agent/save", jsonEncode(u));
+      await post("${Utils.url}/agent/save", jsonEncode(u));
 
   Future<Response> saveEleve(Map<String, dynamic> u) async =>
-      await post("http://localhost:8080/eleve/save", jsonEncode(u));
+      await post("${Utils.url}/eleve/save", jsonEncode(u));
 
   Future<Response> update_agent(Map<String, dynamic> u) async =>
-      await put("http://localhost:8080/agent/update", jsonEncode(u));
+      await put("${Utils.url}/agent/update", jsonEncode(u));
 
   Future<Response> update_eleve(Map<String, dynamic> u) async =>
-      await put("http://localhost:8080/eleve/update", jsonEncode(u));
+      await put("${Utils.url}/eleve/update", jsonEncode(u));
 
   photo(String path, var idpiece) async {
     var photo = await File(path).readAsBytes();
@@ -175,7 +175,7 @@ class EnregistrementConnexion extends GetConnect {
     print(vv.length);
 
     http.Response rep = await http.post(
-      Uri.parse("http://localhost:8080/piecejointe/save/$idpiece"),
+      Uri.parse("${Utils.url}/piecejointe/save/$idpiece"),
       body: vv,
       headers: {"Content-Type": "application/octet-stream"},
     );

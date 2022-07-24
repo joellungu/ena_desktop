@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'package:ena_desktop/vues/abscence/abscence.dart';
+import 'package:ena_desktop/vues/impression/impression.dart';
 import 'package:ena_desktop/vues/update/update.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../abscence/abscence.dart';
 import '../admin/admin.dart';
 import '../agents/agents.dart';
 import '../calendrier/calendrier.dart';
@@ -24,17 +25,15 @@ class Accueil extends StatelessWidget {
       "icon": const Icon(Icons.checklist_outlined)
     },
     {
-      "libelle": "Gestionnaire des abscences",
-      "v": "abscence",
+      "libelle": "Gestionnaire des absences",
+      "v": "absence",
       "icon": const Icon(Icons.history)
     },
-    /*
     {
-      "libelle": "Organigramme",
-      "v": "organigramme",
-      "icon": const Icon(Icons.dashboard_customize)
+      "libelle": "Impression",
+      "v": "impression",
+      "icon": const Icon(Icons.print_outlined),
     },
-    */
     {
       "libelle": "Mise à jour",
       "v": "Mise à jour",
@@ -122,11 +121,13 @@ class Accueil extends StatelessWidget {
                 children: List.generate(listeMenu.length, (index) {
                   return ListTile(
                     onTap: () {
+                      //Impression
                       var v = listeMenu[index]["v"];
                       if (v == "presence" ||
                           v == "agent" ||
                           v == "Mise à jour" ||
-                          v == "abscence" ||
+                          v == "impression" ||
+                          v == "absence" ||
                           v == "statistique" ||
                           v == "calendrier" ||
                           v == "admin" ||
@@ -185,15 +186,17 @@ class Accueil extends StatelessWidget {
                   ? const Text("Enregistrement & Suppression Agent")
                   : accueilController.gVue.value == "statistique"
                       ? const Text("Statistique")
-                      : accueilController.gVue.value == "abscence"
-                          ? const Text("Gestionnaire des abscences")
-                          : accueilController.gVue.value == "Mise à jour"
-                              ? const Text("Mise à jour")
-                              : accueilController.gVue.value == "calendrier"
-                                  ? const Text("Calendrier")
-                                  : accueilController.gVue.value == "admin"
-                                      ? const Text("Admin")
-                                      : const Text("À propos"),
+                      : accueilController.gVue.value == "absence"
+                          ? const Text("Gestionnaire des absences")
+                          : accueilController.gVue.value == "impression"
+                              ? const Text("Impression")
+                              : accueilController.gVue.value == "Mise à jour"
+                                  ? const Text("Mise à jour")
+                                  : accueilController.gVue.value == "calendrier"
+                                      ? const Text("Calendrier")
+                                      : accueilController.gVue.value == "admin"
+                                          ? const Text("Admin")
+                                          : const Text("À propos"),
         ),
         body: accueilController.gVue.value == "presence"
             ? Presence()
@@ -201,15 +204,17 @@ class Accueil extends StatelessWidget {
                 ? Agents()
                 : accueilController.gVue.value == "statistique"
                     ? Statistique()
-                    : accueilController.gVue.value == "abscence"
-                        ? Abscence()
-                        : accueilController.gVue.value == "Mise à jour"
-                            ? Update()
-                            : accueilController.gVue.value == "calendrier"
-                                ? Calendrier()
-                                : accueilController.gVue.value == "admin"
-                                    ? Admin()
-                                    : Propos(),
+                    : accueilController.gVue.value == "absence"
+                        ? Absence()
+                        : accueilController.gVue.value == "impression"
+                            ? Impressions()
+                            : accueilController.gVue.value == "Mise à jour"
+                                ? Update()
+                                : accueilController.gVue.value == "calendrier"
+                                    ? Calendrier()
+                                    : accueilController.gVue.value == "admin"
+                                        ? Admin()
+                                        : Propos(),
       ),
     );
   }

@@ -33,7 +33,7 @@ class Win32Window {
   // sizes are specified to the OS in physical pixels, hence to ensure a
   // consistent size to will treat the width height passed in to this function
   // as logical pixels and scale to appropriate for the default monitor. Returns
-  // true if the window was created successfully.
+  // true if the window was created Effectuéfully.
   bool CreateAndShow(const std::wstring& title,
                      const Point& origin,
                      const Size& size);

@@ -1,6 +1,7 @@
+import 'package:ena_desktop/utils/utils.dart';
+import 'package:ena_desktop/vues/abscence/abscence_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../abscence/abscence_controller.dart';
 import 'calendrier_controller.dart';
 import 'details_agent.dart';
 import 'vue_du_mois.dart';
@@ -21,7 +22,7 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
   //
   late TabController _controller = TabController(length: 2, vsync: this);
   //
-  AbscenceController controller = Get.find();
+  AbsenceController controller = Get.find();
   //
   CalendrierController calendrierController = Get.find();
 
@@ -218,15 +219,17 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
                                     border: Border.all(
-                                        color: idAgent.value ==
-                                                controller.l1[index]['id']
-                                            ? Colors.blue
-                                            : Colors.black),
+                                      color: idAgent.value ==
+                                              controller.l1[index]['id']
+                                          ? Colors.blue
+                                          : Colors.black,
+                                    ),
                                     image: DecorationImage(
-                                        image: NetworkImage(
-                                          "http://localhost:8080/piecejointe/photo/${controller.l1[index]['id']}",
-                                        ),
-                                        fit: BoxFit.fill),
+                                      image: NetworkImage(
+                                        "${Utils.url}/piecejointe/photo/${controller.l1[index]['id']}",
+                                      ),
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
                                 ),
                                 title: Text(

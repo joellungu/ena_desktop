@@ -17,10 +17,13 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
   final _prenom = TextEditingController();
   var fonction = "";
   var fonctions = [];
+  List listeFonction = [];
   //
   RxString photopath = "".obs;
   //
   RxInt choix = 1.obs;
+  //
+  var box = GetStorage();
   //
   EnregistrementAgent() {
     fonction = "${controller.option1.value}";
@@ -367,12 +370,14 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
                                         fonction = "Chef de Division";
                                         fonctions = controller.options1;
                                         choix.value = 1;
+                                        loadBySelect(fonction);
                                         //
                                       } else if (newValue == "Chef de Bureau") {
                                         //
                                         fonction = "Chef de Bureau";
                                         fonctions = controller.options2;
                                         choix.value = 1;
+                                        loadBySelect(fonction);
                                         //
                                       } else if (newValue ==
                                           "Attaché d'Administration de 1eme classe") {
@@ -381,6 +386,7 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
                                             "Attaché d'Administration de 1eme classe";
                                         fonctions = controller.options3;
                                         choix.value = 2;
+                                        loadBySelect(fonction);
                                         //
                                       } else if (newValue ==
                                           "Attaché d'Administration de 2eme classe") {
@@ -389,6 +395,7 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
                                             "Attaché d'Administration de 2eme classe";
                                         fonctions = controller.options4;
                                         choix.value = 3;
+                                        loadBySelect(fonction);
                                         //
                                       } else if (newValue ==
                                           "Agent Auxiliaire de 2eme Classe") {
@@ -397,18 +404,21 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
                                             "Agent Auxiliaire de 2eme Classe";
                                         fonctions = controller.options5;
                                         choix.value = 4;
+                                        loadBySelect(fonction);
                                         //
                                       } else if (newValue == "Huissier") {
                                         //
                                         fonction = "Huissier";
                                         fonctions = controller.options6;
                                         choix.value = 5;
+                                        loadBySelect(fonction);
                                         //
                                       } else {
                                         //
                                         fonction = newValue;
                                         fonctions = controller.options6;
                                         choix.value = 6;
+                                        loadBySelect(fonction);
                                         //
                                       }
                                     },
@@ -458,11 +468,12 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
                                       //controller.option1.value
                                     },
                                     itemBuilder: (context) {
-                                      return List.generate(fonctions.length,
+                                      return List.generate(listeFonction.length,
                                           (index) {
                                         return PopupMenuItem(
-                                          value: fonctions[index],
-                                          child: Text("${fonctions[index]}"),
+                                          value: listeFonction[index],
+                                          child:
+                                              Text("${listeFonction[index]}"),
                                         );
                                       });
                                     },
@@ -736,6 +747,15 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
         ],
       )),
     );
+  }
+
+  loadBySelect(String titreFonction) {
+    if (box.read(titreFonction) != null) {
+      //
+      listeFonction = box.read(titreFonction);
+      //
+    }
+    //
   }
 
   showMessage(String message) {
