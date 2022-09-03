@@ -25,8 +25,24 @@ class AbsenceController extends GetxController {
     if (response.statusCode == 200 || response.statusCode == 200) {
       //
       l1.value = response.body;
+
       //Get.back();
       //Get.snackbar("Effectué", "Enregistrement éffectué avec succé!");
+    }
+  }
+
+  Future<List> saveAgent2() async {
+    Response response = await absenceConnexion.allAgent();
+    if (response.statusCode == 200 || response.statusCode == 200) {
+      //
+      List l = response.body;
+      //print("J'ai la l une foi: $l");
+      return l;
+
+      //Get.back();
+      //Get.snackbar("Effectué", "Enregistrement éffectué avec succé!");
+    } else {
+      return [];
     }
   }
 
@@ -58,7 +74,8 @@ class AbsenceController extends GetxController {
       int t = 0;
       var dd = DateTime.parse(u["dateDebut"]);
       while (t <= j) {
-        var df = dd.add(Duration(hours: t * 24));
+        int va = 0;
+        var df = dd.add(Duration(hours: va));
         print("jours: ${df}");
         Map<String, dynamic> ja = {
           "motifs": u["motifs"],
@@ -66,9 +83,14 @@ class AbsenceController extends GetxController {
           "idutilisateur": u["idutilisateur"]
         };
         //on ajoute
-        Response rep = await absenceConnexion.saveJourabsence(ja);
-        print(rep.statusCode);
-        //print(rep.body);
+        if (df.weekday != 7) {
+          //Tous les jours sauf dimanche...
+          Response rep = await absenceConnexion.saveJourabsence(ja);
+          print(rep.statusCode);
+          //print(rep.body);
+        }
+
+        va = t * 24;
         t++;
       }
       //

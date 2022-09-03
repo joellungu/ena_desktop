@@ -1,25 +1,19 @@
-import 'dart:async';
-import 'dart:io';
-import 'package:ena_desktop/vues/abscence/abscence_controller.dart';
-import 'package:ena_desktop/vues/calendrier/calendrier_controller.dart';
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
-RxList l1 = [].obs;
-RxList l2 = [].obs;
-
-class Impressions extends StatefulWidget {
+class AfficheRapport extends StatefulWidget {
+  //
+  List la;
+  //
+  AfficheRapport(this.la);
   @override
   State<StatefulWidget> createState() {
-    return _Impression();
+    return _AfficheRapport();
   }
 }
 
-class _Impression extends State<Impressions> {
+class _AfficheRapport extends State<AfficheRapport> {
+  //
   RxString gp = "Presence".obs; //
   RxString grade = "Tous".obs; //
   //
@@ -33,82 +27,6 @@ class _Impression extends State<Impressions> {
   bool tous = true;
   //
   List ld = [];
-  //
-  Widget? vue;
-  //
-  Future<List> getListeAgent() async {
-    return controller.saveAgent2();
-  }
-
-  @override
-  void initState() {
-    //
-    controller.saveAgent();
-    //
-    //l1 = listeAgent;
-    //l2 = listeAgent;
-    //
-    mois.text = "${DateTime.now().month}";
-    //mois.text.annee.text.grade.value
-    annee.text = "${DateTime.now().year}";
-    //
-    vue = Container();
-    //
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: getListeAgent(),
-        builder: (c, t) {
-          if (t.hasData) {
-            List listeAgent = t.data as List;
-
-            return AfficheRapport(listeAgent);
-          } else if (t.hasError) {
-            return Container();
-          }
-
-          return Center(
-            child: Container(
-              height: 40,
-              width: 40,
-              child: CircularProgressIndicator(),
-            ),
-          );
-        });
-  }
-}
-
-class AfficheRapport extends StatefulWidget {
-  //
-  List listeAgent;
-  //
-  AfficheRapport(this.listeAgent);
-  @override
-  State<StatefulWidget> createState() {
-    return _AfficheRapport();
-  }
-}
-
-class _AfficheRapport extends State<AfficheRapport> {
-  //
-  RxString gp = "Presence".obs; //
-  RxString grade = "Tous".obs; //
-  //
-  String repertoire = "";
-  //
-  TextEditingController mois = TextEditingController();
-  TextEditingController annee = TextEditingController();
-  TextEditingController matricule = TextEditingController();
-  //
-  //
-  AbsenceController controller = Get.find();
-  //||
-  bool tous = true;
-  //
-  List listeAgent = [];
   //
   Widget? vue;
   //
@@ -156,20 +74,20 @@ class _AfficheRapport extends State<AfficheRapport> {
                 ///456.214
                 onPressed: () {
                   setState(() {
-                    listeAgent = [];
+                    ld = [];
                     for (var agent in widget.listeAgent) {
                       if (agent["matricule"] == matricule.text) {
                         print("la liste des agents: $agent");
                         grade.value = agent["grade"];
-                        listeAgent.add(agent);
+                        ld.add(agent);
                         break;
                       }
                     }
                     //
-                    //widget.listeAgent.clear();
-                    //widget.listeAgent = ld;
+                    widget.listeAgent.clear();
+                    widget.listeAgent = ld;
                     //
-                    print("la liste des agents:::: ${listeAgent}");
+                    print("la liste des agents:::: ${widget.listeAgent}");
                   });
                 },
                 icon: const Icon(Icons.search),
@@ -237,7 +155,7 @@ class _AfficheRapport extends State<AfficheRapport> {
                             //
                             matricule.text = "";
                             //
-                            listeAgent = widget.listeAgent;
+                            widget.listeAgent = widget.l2;
                             //
                             grade.value = newValue!;
                             if (grade.value == "Tous") {
@@ -510,35 +428,35 @@ class _AfficheRapport extends State<AfficheRapport> {
                             ),
                           ),
                           grade.value == "Chef de Division" || tous
-                              ? getVue("Chef de Division", listeAgent)
+                              ? getVue("Chef de Division", widget.listeAgent)
                               : pw.Container(),
                           grade.value == "Chef de Bureau" || tous
-                              ? getVue("Chef de Bureau", listeAgent)
+                              ? getVue("Chef de Bureau", widget.listeAgent)
                               : pw.Container(),
                           grade.value ==
                                       "Attaché d'Administration de 1eme classe" ||
                                   tous
                               ? getVue(
                                   "Attaché d'Administration de 1eme classe",
-                                  listeAgent)
+                                  widget.listeAgent)
                               : pw.Container(),
                           grade.value ==
                                       "Attaché d'Administration de 2eme classe" ||
                                   tous
                               ? getVue(
                                   "Attaché d'Administration de 2eme classe",
-                                  listeAgent)
+                                  widget.listeAgent)
                               : pw.Container(),
                           grade.value == "Agent Auxiliaire de 2eme Classe" ||
                                   tous
-                              ? getVue(
-                                  "Agent Auxiliaire de 2eme Classe", listeAgent)
+                              ? getVue("Agent Auxiliaire de 2eme Classe",
+                                  widget.listeAgent)
                               : pw.Container(),
                           grade.value == "Huissier" || tous
-                              ? getVue("Huissier", listeAgent)
+                              ? getVue("Huissier", widget.listeAgent)
                               : pw.Container(),
                           grade.value == "Stagiaire" || tous
-                              ? getVue("Stagiaire", listeAgent)
+                              ? getVue("Stagiaire", widget.listeAgent)
                               : pw.Container(),
                         ];
                       },
@@ -549,15 +467,11 @@ class _AfficheRapport extends State<AfficheRapport> {
                   print("${l1[1]['nombreJourPartiel'] ?? '...'}");
                   print("${l1[1]['lam'] ?? '...'}");
                   //
-                  Directory? appDownDir = await getDownloadsDirectory();
                   Directory appDocDir =
                       await getApplicationDocumentsDirectory();
                   String appDocPath = appDocDir.path;
-                  String appDownDirPath = appDownDir!.path;
                   //
                   print("$appDocPath/${mois.text}.${annee.text}.rapport.pdf");
-                  repertoire =
-                      "$appDocPath/${mois.text}.${annee.text}.rapport.pdf";
                   //
                   final file = File(
                       "$appDocPath/${mois.text}.${annee.text}.rapport.pdf");
@@ -571,7 +485,6 @@ class _AfficheRapport extends State<AfficheRapport> {
                   //await shell.run('''cd /''');
                   //await shell.run(
                   //  '''open $appDocPath/${mois.text}.${annee.text}.rapport.pdf''');
-                  setState(() {}); //
                   if (matricule.text.isNotEmpty) {
                     //
                   } else {
@@ -721,11 +634,11 @@ class _AfficheRapport extends State<AfficheRapport> {
                         children: [
                           //
                           grade.value == "Chef de Division" || tous
-                              ? EntiteListe("Chef de Division", listeAgent,
-                                  mois.text, annee.text)
+                              ? EntiteListe("Chef de Division",
+                                  widget.listeAgent, mois.text, annee.text)
                               : Container(),
                           grade.value == "Chef de Bureau" || tous
-                              ? EntiteListe("Chef de Bureau", listeAgent,
+                              ? EntiteListe("Chef de Bureau", widget.listeAgent,
                                   mois.text, annee.text)
                               : Container(),
                           grade.value ==
@@ -733,7 +646,7 @@ class _AfficheRapport extends State<AfficheRapport> {
                                   tous
                               ? EntiteListe(
                                   "Attaché d'Administration de 1eme classe",
-                                  listeAgent,
+                                  widget.listeAgent,
                                   mois.text,
                                   annee.text)
                               : Container(),
@@ -742,33 +655,32 @@ class _AfficheRapport extends State<AfficheRapport> {
                                   tous
                               ? EntiteListe(
                                   "Attaché d'Administration de 2eme classe",
-                                  listeAgent,
+                                  widget.listeAgent,
                                   mois.text,
                                   annee.text)
                               : Container(),
                           grade.value == "Agent Auxiliaire de 2eme Classe" ||
                                   tous
                               ? EntiteListe("Agent Auxiliaire de 2eme Classe",
-                                  listeAgent, mois.text, annee.text)
+                                  widget.listeAgent, mois.text, annee.text)
                               : Container(),
                           grade.value == "Huissier" || tous
-                              ? EntiteListe(
-                                  "Huissier", listeAgent, mois.text, annee.text)
+                              ? EntiteListe("Huissier", widget.listeAgent,
+                                  mois.text, annee.text)
                               : Container(),
                           grade.value == "Stagiaire" || tous
-                              ? EntiteListe("Stagiaire", listeAgent, mois.text,
-                                  annee.text)
+                              ? EntiteListe("Stagiaire", widget.listeAgent,
+                                  mois.text, annee.text)
                               : Container(),
                         ],
                       )
                     : ListView(
                         children: [
-                          EntiteListe(
-                              grade.value, listeAgent, mois.text, annee.text)
+                          EntiteListe(grade.value, widget.listeAgent, mois.text,
+                              annee.text)
                         ],
                       ),
-              ),
-              Text(repertoire)
+              )
             ],
           ),
         ),
@@ -898,7 +810,7 @@ class _AfficheRapport extends State<AfficheRapport> {
                           ),
                           alignment: pw.Alignment.center,
                           child: pw.Text(
-                            "${getRaps(listeAgent[index]['id'])['nombreJourAbsent'] ?? ''}",
+                            "A.N.J",
                             style: pw.TextStyle(
                               fontSize: 7,
                             ),
@@ -947,321 +859,4 @@ class _AfficheRapport extends State<AfficheRapport> {
     return m;
   }
 }
-
-class EntiteListe extends StatefulWidget {
-  String grade;
-  List listeDeAgent = [];
-  String mois;
-  String annee;
-  //
-  EntiteListe(
-    this.grade,
-    this.listeDeAgent,
-    this.mois,
-    this.annee,
-  );
-  //
-  @override
-  State<StatefulWidget> createState() {
-    return _EntiteListe();
-  }
-}
-
-class _EntiteListe extends State<EntiteListe> {
-  //
-  CalendrierController calendrierController = Get.find();
-  //
-  RxList ll = RxList();
-  //
-  final pdf = pw.Document();
-  //
-  @override
-  void initState() {
-    //
-    //l1 = RxList([]);
-    //l2 = RxList([]);
-    //
-    print("J'ai bien initialisé longueur vaut: ${widget.listeDeAgent.length}");
-    //
-    super.initState();
-  }
-
-  //
-  @override
-  Widget build(BuildContext context) {
-    //
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          height: 25,
-          alignment: Alignment.center,
-          child: Text(
-            widget.grade,
-          ),
-        ),
-        Column(
-          children: List.generate(
-            widget.listeDeAgent.length,
-            (index) {
-              //Timer(Duration(milliseconds: 5), () {
-              //
-
-              //
-              //});
-              //getDataPp(index);
-              if (widget.listeDeAgent[index]['grade'] == widget.grade) {
-                //
-                //l1.add({});
-                //l2.add({});
-                //
-                //getDataPp(index);
-                return Container(
-                  color: Colors.grey.shade200,
-                  height: 35,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        width: 50,
-                        child: const Text(""),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.black,
-                            ),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            " ${widget.listeDeAgent[index]['nom']} ${widget.listeDeAgent[index]['postnom']}",
-                            textAlign: TextAlign.start,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.black,
-                            ),
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                              " ${widget.listeDeAgent[index]['fonction']}"),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: FutureBuilder(
-                              future: getDataPp(index),
-                              builder: (c, t) {
-                                if (t.hasData) {
-                                  var v = t.data! as Map;
-                                  //l1.add({"nombreJours": v['nombreJours']});
-                                  return Text("${v['nombreJours']}");
-                                } else if (t.hasError) {
-                                  return Container();
-                                }
-
-                                return Center(
-                                  child: Container(
-                                    height: 40,
-                                    width: 40,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              },
-                            )
-                            //Obx(
-                            //  () => Text("${l1[index]['nombreJours'] ?? ''}")),
-                            ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: FutureBuilder(
-                              future: getDataPp(index),
-                              builder: (c, t) {
-                                if (t.hasData) {
-                                  var v = t.data! as Map;
-                                  //l1.add({
-                                  //"nombreJourPartiel": v['nombreJourPartiel']
-                                  //});
-                                  return Text("${v['nombreJourPartiel']}");
-                                } else if (t.hasError) {
-                                  return Container();
-                                }
-
-                                return Center(
-                                  child: Container(
-                                    height: 40,
-                                    width: 40,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              },
-                            )
-                            //Obx(() =>
-                            //  Text("${l1[index]['nombreJourPartiel'] ?? ''}")),
-                            ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.black,
-                            ),
-                          ),
-                          alignment: Alignment.center,
-                          child: FutureBuilder(
-                            future: getDataPp(index), //
-                            builder: (c, t) {
-                              if (t.hasData) {
-                                var v = t.data! as Map;
-                                //l2.add({"lam": v['lam']});
-                                return Text("${v['nombreJourAbsent']}");
-                              } else if (t.hasError) {
-                                return Container();
-                              }
-
-                              return Center(
-                                child: Container(
-                                  height: 40,
-                                  width: 40,
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: FutureBuilder(
-                              future: getDataPp(index), //nombreJourAbsent
-                              builder: (c, t) {
-                                if (t.hasData) {
-                                  var v = t.data! as Map;
-                                  //l2.add({"lam": v['lam']});
-                                  return Text("${v['lam']}");
-                                } else if (t.hasError) {
-                                  return Container();
-                                }
-
-                                return Center(
-                                  child: Container(
-                                    height: 40,
-                                    width: 40,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              },
-                            )
-                            //Obx(() => Text("${l2[index]['lam'] ?? ''}")),
-                            ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return Container();
-              }
-            },
-          ),
-        )
-      ],
-    );
-  }
-
-  Future<Map> getDataPp(int index) async {
-    //
-    print(widget.annee);
-    print(widget.mois);
-    DateTime moisEnQuestion =
-        DateTime(int.parse(widget.annee), int.parse(widget.mois));
-    //
-    DateTime md = DateTime(int.parse(widget.annee), int.parse(widget.mois));
-    DateTime mListe = DateTime(int.parse(widget.annee), int.parse(widget.mois));
-    List listeDeDate = [];
-    int t = 0;
-    var e = DateUtils.getDaysInMonth(
-        int.parse(widget.annee), int.parse(widget.mois));
-
-    print("//////////////??$e");
-    print("//////////////00${moisEnQuestion.month}");
-    print("//////////////11${md.month}");
-    print("//////////////LL${md.add(Duration(hours: 24))}");
-    print("//////////////::${md.month}");
-    while (t < e) {
-      //moisEnQuestion.month == md.month
-      md.add(const Duration(hours: 24));
-      //
-      var va = t * 24;
-      //
-      var dt = mListe.add(Duration(days: t));
-      if (dt.weekday != 7) {
-        listeDeDate.add(dt);
-      }
-
-      t++;
-    }
-    //
-    print("//////////////::$listeDeDate");
-    //
-    Map pp = await calendrierController.mois_pp(
-      //idcarte
-      "${widget.listeDeAgent[index]['idcarte']}",
-      widget.mois.length == 1 ? "0${widget.mois}" : widget.mois,
-      widget.annee,
-    );
-    //
-    Map lam = await calendrierController.mois_all_mm(
-      //idcarte
-      "${widget.listeDeAgent[index]['id']}",
-      widget.mois.length == 1 ? "0${widget.mois}" : widget.mois,
-      widget.annee,
-    );
-    Map c = {
-      "id": "${widget.listeDeAgent[index]['id']}",
-      "nombreJours": pp["nombreJours"],
-      "nombreJourPartiel": pp["nombreJourPartiel"],
-      "nombreJourAbsent":
-          "${listeDeDate.length - lam["lam"] - pp["nombreJourPartiel"] - pp["nombreJours"]}",
-      "lam": lam["lam"]
-    };
-    print(c);
-    l1.add(c);
-    return c;
-  }
-}
+*/

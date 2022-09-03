@@ -73,6 +73,7 @@ class EnregistrementController extends GetxController {
       Get.snackbar("Effectué", "Enregistrement éffectué avec succé!");
     } else {
       //
+      print("Code d'erreur: ${response.body}");
       Get.back();
       Get.snackbar("Erreur", "Code d'erreur: ${response.statusCode}!");
     }

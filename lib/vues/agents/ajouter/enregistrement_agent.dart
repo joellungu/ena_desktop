@@ -27,12 +27,13 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
   //
   EnregistrementAgent() {
     fonction = "${controller.option1.value}";
+    fonctions = controller.options1;
   }
   //
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () => (Column(
+      () => Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
@@ -453,7 +454,10 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text("Fonction  "),
-                              Text("${controller.option1.value}  "),
+                              Expanded(
+                                flex: 8,
+                                child: Text("${controller.option1.value}  "),
+                              ),
                               Expanded(
                                 flex: 1,
                                 child: Container(
@@ -468,12 +472,11 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
                                       //controller.option1.value
                                     },
                                     itemBuilder: (context) {
-                                      return List.generate(listeFonction.length,
+                                      return List.generate(fonctions.length,
                                           (index) {
                                         return PopupMenuItem(
-                                          value: listeFonction[index],
-                                          child:
-                                              Text("${listeFonction[index]}"),
+                                          value: fonctions[index],
+                                          child: Text("${fonctions[index]}"),
                                         );
                                       });
                                     },
@@ -745,7 +748,7 @@ class EnregistrementAgent extends GetView<EnregistrementController> {
             ),
           )
         ],
-      )),
+      ),
     );
   }
 

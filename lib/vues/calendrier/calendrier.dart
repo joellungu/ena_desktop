@@ -172,7 +172,7 @@ class _Calendrier extends State<Calendrier> with TickerProviderStateMixin {
                                   );
                                   //
                                   idAgent.value = controller.l1[index]['id'];
-                                  //print(idAgent.value);
+                                  print("${controller.l1[index]['id']}");
                                   //
                                   calendrierController.mois_a(
                                     "${controller.l1[index]['id']}",

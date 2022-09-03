@@ -303,42 +303,8 @@ class _MoisVue extends State<MoisVue> {
                         }
                       });
                       //
-                      return InkWell(
-                        onTap: () {
-                          //
-                          var d = DateUtils.firstDayOffset(
-                              DateTime.now().year,
-                              DateTime.now().month,
-                              MaterialLocalizations.of(context));
-                          print("La vaut: $d");
-                          var dd = DateTime(
-                              DateTime.now().year, DateTime.now().month);
-                          print(dd);
-                        },
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          child: Obx(
-                            () => Container(
-                              decoration: BoxDecoration(
-                                color: absenceJ.value
-                                    ? Colors.blueGrey
-                                    : getCouleur(venu.value, parti.value),
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "${index - d}",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: v,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
+                      return JourAffiche(index, absenceJ, venu, parti, d,
+                          widget.mois, widget.annee);
                     }
                   }),
                 ),
@@ -349,7 +315,72 @@ class _MoisVue extends State<MoisVue> {
       ),
     );
   }
+}
 
+class JourAffiche extends StatefulWidget {
+  RxBool absenceJ;
+  int index;
+  RxBool venu;
+  RxBool parti;
+  int d;
+  int mois;
+  int annee;
+  JourAffiche(
+    this.index,
+    this.absenceJ,
+    this.venu,
+    this.parti,
+    this.d,
+    this.mois,
+    this.annee,
+  );
+
+  @override
+  State<StatefulWidget> createState() {
+    return _JourAffiche();
+  }
+}
+
+class _JourAffiche extends State<JourAffiche> {
+  @override
+  Widget build(BuildContext context) {
+    var dd = DateTime(widget.annee, widget.mois, widget.index - widget.d);
+    return InkWell(
+      onTap: () {
+        //
+        var d = DateUtils.firstDayOffset(DateTime.now().year,
+            DateTime.now().month, MaterialLocalizations.of(context));
+        //print("La vaut: $d");
+        var dd = DateTime(widget.annee, widget.mois, widget.index - widget.d);
+        print(dd.weekday);
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: dd.weekday == 7
+                ? Colors.red
+                : widget.absenceJ.value
+                    ? Colors.blueGrey
+                    : getCouleur(widget.venu.value, widget.parti.value),
+            borderRadius: BorderRadius.circular(25),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            "${widget.index - widget.d}",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 17,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  //
   Color getCouleur(bool venu, bool partie) {
     print("$venu == $partie");
     if (venu && partie) {

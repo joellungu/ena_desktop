@@ -73,6 +73,7 @@ class Accueil extends StatelessWidget {
         drawer: Drawer(
           elevation: 0,
           child: ListView(
+            controller: ScrollController(),
             padding: const EdgeInsets.only(
               top: 20,
             ),

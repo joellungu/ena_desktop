@@ -180,6 +180,9 @@ class MiseJA extends GetView<EnregistrementController> {
   MiseJA(this.map) {
     _nom.text = map['nom'];
     _postnom.text = map['postnom'];
+    _prenom.text = map['prenom'];
+    _email.text = map['email'];
+    _adresse.text = map['adresse'];
     _matricule.text = map['matricule'];
     _telephone.text = map['telephone'];
     fonction = map['fonction'];
@@ -636,7 +639,10 @@ class MiseJA extends GetView<EnregistrementController> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text("Fonction  "),
+                              Expanded(
+                                flex: 8,
+                                child: Text("Fonction  "),
+                              ),
                               Text("${controller.option1.value}  "),
                               Expanded(
                                 flex: 1,
